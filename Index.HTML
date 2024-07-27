@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phrase Manager</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #phrases { margin-top: 20px; }
+        .phrase { cursor: pointer; padding: 10px; background-color: #f0f0f0; margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <h1>Phrase Manager</h1>
+    <input type="text" id="newPhrase" placeholder="Add a new phrase">
+    <button onclick="addPhrase()">Add Phrase</button>
+    <div id="phrases"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            displayPhrases();
+        });
+
+        function addPhrase() {
+            const input = document.getElementById('newPhrase');
+            const phrase = input.value.trim();
+            if (phrase) {
+                let phrases = JSON.parse(localStorage.getItem('phrases')) || [];
+                phrases.push(phrase);
+                localStorage.setItem('phrases', JSON.stringify(phrases));
+                input.value = '';
+                displayPhrases();
+            }
+        }
+
+        function displayPhrases() {
+            const phrasesDiv = document.getElementById('phrases');
+            phrasesDiv.innerHTML = '';
+            const phrases = JSON.parse(localStorage.getItem('phrases')) || [];
+            phrases.forEach(phrase => {
+                const div = document.createElement('div');
+                div.className = 'phrase';
+                div.textContent = phrase;
+                div.onclick = () => copyToClipboard(phrase);
+                phrasesDiv.appendChild(div);
+            });
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Phrase copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>
